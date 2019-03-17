@@ -1,6 +1,13 @@
 # Docker Build System
 
+[![PyPI version](https://badge.fury.io/py/DockerBuildSystem.svg)](https://badge.fury.io/py/DockerBuildSystem)
+[![Build Status](https://travis-ci.com/DIPSAS/DockerBuildSystem.svg?branch=master)](https://travis-ci.com/DIPSAS/DockerBuildSystem)
+[![MIT license](http://img.shields.io/badge/license-MIT-brightgreen.svg)](http://opensource.org/licenses/MIT)
+
 A simple library for handling docker commands with python.
+
+## Install Or Upgrade
+- pip install --upgrade DockerBuildSystem
 
 ## Example
 - Include DockerBuildSystem tools:
@@ -55,12 +62,11 @@ VersionTools.ExportVersionFromChangelogToEnvironment("path_to/CHANGELOG.md", "ve
 Please have a look at an example of use here:
 - https://github.com/DIPSAS/DockerBuildSystem/tree/master/example
 
-## Install And/Or Upgrade
-- pip install --no-cache-dir --upgrade DockerBuildSystem
-
 ## Prerequisites
 - Docker:
     - https://www.docker.com/get-docker
+- Install Dependencies:
+    - pip install -r requirements.txt
 
 ## Additional Info
 - The pip package may be located at:
@@ -70,3 +76,6 @@ Please have a look at an example of use here:
 1. Configure setup.py with new version.
 2. Build: python setup.py bdist_wheel
 3. Publish: twine upload dist/*
+
+## Run Unit Tests
+- python -m unittest
