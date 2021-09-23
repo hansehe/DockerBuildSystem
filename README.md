@@ -1,7 +1,7 @@
 # Docker Build System
 
 [![PyPI version](https://badge.fury.io/py/DockerBuildSystem.svg)](https://badge.fury.io/py/DockerBuildSystem)
-[![Build Status](https://travis-ci.com/DIPSAS/DockerBuildSystem.svg?branch=master)](https://travis-ci.com/DIPSAS/DockerBuildSystem)
+[![Build Status](https://travis-ci.com/hansehe/DockerBuildSystem.svg?branch=master)](https://travis-ci.com/hansehe/DockerBuildSystem)
 [![MIT license](http://img.shields.io/badge/license-MIT-brightgreen.svg)](http://opensource.org/licenses/MIT)
 
 A simple library for handling docker commands with python.
@@ -73,7 +73,7 @@ VersionTools.ExportVersionFromChangelogToEnvironment("path_to/CHANGELOG.md", "ve
 - dryRun - boolean. True if you want to do a dryRun, i.e. print what would have happened
 
 Please have a look at an example of use here:
-- https://github.com/DIPSAS/DockerBuildSystem/tree/master/example
+- https://github.com/hansehe/DockerBuildSystem/tree/master/example
 
 ## Prerequisites
 - Docker:
