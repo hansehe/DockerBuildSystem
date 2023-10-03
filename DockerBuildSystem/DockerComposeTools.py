@@ -55,7 +55,7 @@ def DockerComposePull(composeFiles, dryRun=False):
     terminalCommand = "docker-compose"
     terminalCommand += MergeComposeFileToTerminalCommand(composeFiles)
     terminalCommand += " pull"
-    if(dryRun):
+    if dryRun:
         print("would have called {}".format(terminalCommand))
     else:
         TerminalTools.ExecuteTerminalCommands([terminalCommand], True)
@@ -67,7 +67,7 @@ def TagImages(composeFile, newTag, dryRun = False):
         sourceImage = dockerComposeMap['services'][service]['image']
         tagIndex = sourceImage.rfind(':')
         targetImage = sourceImage[:tagIndex+1] + str(newTag)
-        if(not dryRun):
+        if not dryRun:
             DockerImageTools.TagImage(sourceImage, targetImage)
         else:
             print('Would have tagged image {} as {}'.format(sourceImage, targetImage))
@@ -88,10 +88,25 @@ def PublishDockerImages(composeFile, dryRun = False):
     dockerComposeMap = YamlTools.GetYamlData([composeFile])
     for service in dockerComposeMap['services']:
         sourceImage = dockerComposeMap['services'][service]['image']
-        if(not dryRun):
+        if not dryRun:
             DockerImageTools.PushImage(sourceImage)
         else:
             print('Would have pushed {}'.format(sourceImage))
+
+
+def MultiBuildDockerImages(composeFile, platforms, dryRun = False):
+    dockerComposeMap = YamlTools.GetYamlData([composeFile])
+    for service in dockerComposeMap['services']:
+        sourceImage = dockerComposeMap['services'][service]['image']
+        dockerfile = dockerComposeMap['services'][service].get('build', {}).get('dockerfile', 'Dockerfile')
+        context = dockerComposeMap['services'][service].get('build', {}).get('context', '.')
+        directory = os.path.dirname(composeFile)
+        fullPathDockerfile = os.path.join(directory, dockerfile)
+        fullPathContext = os.path.join(directory, context)
+        if not dryRun:
+            DockerImageTools.BuildImage(sourceImage, fullPathDockerfile, fullPathContext, platforms)
+        else:
+            print('Would have multi built {}'.format(sourceImage))
 
 
 def PromoteDockerImages(composeFile, targetTags, sourceFeed = None, targetFeed = None, user = None, password = None, logoutFromFeeds = False, dryRun = False):

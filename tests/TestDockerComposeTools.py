@@ -71,6 +71,12 @@ class TestDockerComposeTools(unittest.TestCase):
             self.assertTrue(yamlData['services'][service]['environment']['SOME_VARIABLE'] == '${SOME_ENV_VARIABLE}')
         print('DONE COMPOSE ADD DIGESTS')
 
+    def test_i_MultiBuildImages(self):
+        print('COMPOSE MULTI BUILD')
+        TerminalTools.LoadEnvironmentVariables(os.path.join(TestTools.TEST_SAMPLE_FOLDER, '.env'))
+        DockerComposeTools.MultiBuildDockerImages(os.path.join(TestTools.TEST_SAMPLE_FOLDER, 'docker-compose.yml'), ['linux/amd64', 'linux/arm64'])
+        print('DONE COMPOSE MULTI BUILD')
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -3,8 +3,17 @@ import re
 import json
 
 
-def BuildImage(imageName, dockerfile = 'Dockerfile', context = '.'):
-    dockerCommand = "docker build -f " + dockerfile + " -t " + imageName + " " + context
+def BuildImage(imageName, dockerfile = 'Dockerfile', context = '.', platforms = None):
+    if platforms is None:
+        platforms = []
+    platformsCommand = ''
+    buildxCommand = '' 
+    if len(platforms) > 0:
+        createBuildDriverCommand = 'docker buildx create --use'
+        TerminalTools.ExecuteTerminalCommands([createBuildDriverCommand], True)
+        platformsCommand = '--platform ' + ','.join(platforms) + ' '
+        buildxCommand = 'buildx '
+    dockerCommand = "docker " + buildxCommand + "build " + platformsCommand + "-f " + dockerfile + " -t " + imageName + " " + context
     TerminalTools.ExecuteTerminalCommands([dockerCommand], True)
 
 
