@@ -65,8 +65,7 @@ def TagImages(composeFile, newTag, dryRun = False):
     dockerComposeMap = YamlTools.GetYamlData([composeFile])
     for service in dockerComposeMap['services']:
         sourceImage = dockerComposeMap['services'][service]['image']
-        tagIndex = sourceImage.rfind(':')
-        targetImage = sourceImage[:tagIndex+1] + str(newTag)
+        targetImage = DockerImageTools.GetTargetImage(sourceImage, newTag)
         if not dryRun:
             DockerImageTools.TagImage(sourceImage, targetImage)
         else:
@@ -94,17 +93,20 @@ def PublishDockerImages(composeFile, dryRun = False):
             print('Would have pushed {}'.format(sourceImage))
 
 
-def MultiBuildDockerImages(composeFile, platforms, dryRun = False):
+def MultiBuildDockerImages(composeFile, platforms, tags = None, push = False, dryRun = False):
     dockerComposeMap = YamlTools.GetYamlData([composeFile])
     for service in dockerComposeMap['services']:
         sourceImage = dockerComposeMap['services'][service]['image']
-        dockerfile = dockerComposeMap['services'][service].get('build', {}).get('dockerfile', 'Dockerfile')
-        context = dockerComposeMap['services'][service].get('build', {}).get('context', '.')
+        if 'build' not in dockerComposeMap['services'][service]:
+            continue
+        dockerfile = dockerComposeMap['services'][service]['build'].get('dockerfile', 'Dockerfile')
+        context = dockerComposeMap['services'][service]['build'].get('context', '.')
+        args = dockerComposeMap['services'][service]['build'].get('args', [])
         directory = os.path.dirname(composeFile)
         fullPathDockerfile = os.path.join(directory, dockerfile)
         fullPathContext = os.path.join(directory, context)
         if not dryRun:
-            DockerImageTools.BuildImage(sourceImage, fullPathDockerfile, fullPathContext, platforms)
+            DockerImageTools.BuildImage(sourceImage, fullPathDockerfile, fullPathContext, args, tags, platforms, push)
         else:
             print('Would have multi built {}'.format(sourceImage))
 

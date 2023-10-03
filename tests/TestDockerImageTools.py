@@ -12,7 +12,7 @@ class TestDockerImageTools(unittest.TestCase):
     def test_a_BuildImage(self):
         print('BUILD IMAGE')
         DockerImageTools.BuildImage(TEST_IMAGE, dockerfile=os.path.join(TestTools.TEST_SAMPLE_FOLDER, 'Dockerfile'), context=TestTools.TEST_SAMPLE_FOLDER)
-        DockerImageTools.BuildImage(TEST_IMAGE, dockerfile=os.path.join(TestTools.TEST_SAMPLE_FOLDER, 'Dockerfile'), context=TestTools.TEST_SAMPLE_FOLDER, platforms=['linux/amd64', 'linux/arm64'])
+        DockerImageTools.BuildImage(TEST_IMAGE, dockerfile=os.path.join(TestTools.TEST_SAMPLE_FOLDER, 'Dockerfile'), context=TestTools.TEST_SAMPLE_FOLDER, args=['VERSION=1.2.3'], platforms=['linux/amd64', 'linux/arm64'])
         print('DONE BUILD IMAGE')
 
     def test_b_RunImage(self):

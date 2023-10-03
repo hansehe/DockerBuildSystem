@@ -74,7 +74,7 @@ class TestDockerComposeTools(unittest.TestCase):
     def test_i_MultiBuildImages(self):
         print('COMPOSE MULTI BUILD')
         TerminalTools.LoadEnvironmentVariables(os.path.join(TestTools.TEST_SAMPLE_FOLDER, '.env'))
-        DockerComposeTools.MultiBuildDockerImages(os.path.join(TestTools.TEST_SAMPLE_FOLDER, 'docker-compose.yml'), ['linux/amd64', 'linux/arm64'])
+        DockerComposeTools.MultiBuildDockerImages(os.path.join(TestTools.TEST_SAMPLE_FOLDER, 'docker-compose.yml'), ['linux/amd64', 'linux/arm64'], ['tag2', 'tag3'])
         print('DONE COMPOSE MULTI BUILD')
 
 

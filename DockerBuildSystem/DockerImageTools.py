@@ -3,17 +3,37 @@ import re
 import json
 
 
-def BuildImage(imageName, dockerfile = 'Dockerfile', context = '.', platforms = None):
+def GetTargetImage(sourceImage, newTag):
+    tagIndex = sourceImage.rfind(':')
+    targetImage = sourceImage[:tagIndex + 1] + str(newTag)
+    return targetImage
+
+
+def BuildImage(imageName, dockerfile = 'Dockerfile', context = '.',
+               args = None, tags = None, platforms = None, push = False):
+    if args is None:
+        args = []
+    if tags is None:
+        tags = []
     if platforms is None:
         platforms = []
+    argsCommand = ''
+    for arg in args:
+        argsCommand += ' --build-arg ' + arg
+    tagsCommand = ' -t ' + imageName
+    for tag in tags:
+        tagsCommand += ' -t ' + GetTargetImage(imageName, tag)
     platformsCommand = ''
     buildxCommand = '' 
+    pushCommand = ''
+    if push:
+        pushCommand = ' --push'
     if len(platforms) > 0:
         createBuildDriverCommand = 'docker buildx create --use'
         TerminalTools.ExecuteTerminalCommands([createBuildDriverCommand], True)
         platformsCommand = '--platform ' + ','.join(platforms) + ' '
         buildxCommand = 'buildx '
-    dockerCommand = "docker " + buildxCommand + "build " + platformsCommand + "-f " + dockerfile + " -t " + imageName + " " + context
+    dockerCommand = "docker " + buildxCommand + "build " + platformsCommand + "-f " + dockerfile + argsCommand + tagsCommand + pushCommand + " " + context
     TerminalTools.ExecuteTerminalCommands([dockerCommand], True)
 
 
