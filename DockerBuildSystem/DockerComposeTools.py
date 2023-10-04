@@ -102,11 +102,9 @@ def MultiBuildDockerImages(composeFile, platforms, tags = None, push = False, dr
         dockerfile = dockerComposeMap['services'][service]['build'].get('dockerfile', 'Dockerfile')
         context = dockerComposeMap['services'][service]['build'].get('context', '.')
         args = dockerComposeMap['services'][service]['build'].get('args', [])
-        directory = os.path.dirname(composeFile)
-        fullPathContext = os.path.join(directory, context)
-        fullPathDockerfile = os.path.join(fullPathContext, dockerfile)
+        fullPathDockerfile = os.path.join(context, dockerfile)
         if not dryRun:
-            DockerImageTools.BuildImage(sourceImage, fullPathDockerfile, fullPathContext, args, tags, platforms, push)
+            DockerImageTools.BuildImage(sourceImage, fullPathDockerfile, context, args, tags, platforms, push)
         else:
             print('Would have multi built {}'.format(sourceImage))
 

@@ -8,7 +8,7 @@ __pycache__/
 *.so
 *~
 *example/output/
-docker-compose.test.temp.yml
+docker-compose.test.*.yml
 
 # due to using tox and pytest
 .tox
