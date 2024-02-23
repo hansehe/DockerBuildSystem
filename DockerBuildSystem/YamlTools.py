@@ -20,7 +20,7 @@ def GetSingleYamlData(yamlFile, ignoreEmptyYamlData = False, infoMsgOnError = No
         if ignoreEmptyYamlData:
             yamlData = {}
             return yamlData
-        errorMsg = "No yml data where discovered!\r\n"
+        errorMsg = "No yml data discovered!\r\n"
         if not(infoMsgOnError == None):
             errorMsg += infoMsgOnError
         raise Exception(errorMsg)

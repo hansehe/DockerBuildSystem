@@ -97,4 +97,4 @@ Please have a look at an example of use here:
 2. Install from local file with force-reinstall and no-cache-dir options to force reinstallation when you have changed the code without changing the version number: `python -m pip install path\to\yourgitrepo\DockerBuildSystem\dist\DockerBuildSystem-1.1.43-py2.py3-none-any.whl --force-reinstall --no-cache-dir`
 
 ## Run Unit Tests
-- python -m unittest
+- python -m unittest discover -p *Test*.py

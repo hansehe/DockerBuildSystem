@@ -1,5 +1,8 @@
-from DockerBuildSystem import TerminalTools
 import subprocess
+import json
+import time
+
+from DockerBuildSystem import TerminalTools
 
 
 def DeployStack(composeFile, stackName, environmentVariablesFiles = [], withRegistryAuth = False):
@@ -78,10 +81,39 @@ def RemoveSwarmVolume(volumeName):
     TerminalTools.ExecuteTerminalCommands([dockerCommand])
 
 
+def CheckIfSwarmServiceIsRunning(serviceNames = None):
+    terminalCommand = "docker service ls --format=json"
+    servicesRaw = str(TerminalTools.ExecuteTerminalCommandAndGetOutput(terminalCommand).decode("utf-8"))
+    servicesRaw = servicesRaw.splitlines()
+    for serviceRaw in servicesRaw:
+        if serviceRaw.strip() == "":
+            continue
+        service = json.loads(serviceRaw)
+        if serviceNames == None or service['Name'] in serviceNames:
+            replicas = service['Replicas'].split('/')
+            currentReplicas = int(replicas[0])
+            totalReplicas = int(replicas[1])
+            if currentReplicas < totalReplicas:
+                print("Service: " + service['Name'] + " is not running. Current replicas: " + str(currentReplicas) + " of " + str(totalReplicas))
+                return False
+    return True
+
+
 def SwarmIsInitiated():
     terminalCommand = "docker node inspect self --pretty"
     returnCode = subprocess.Popen(terminalCommand, shell=True).wait()
     return returnCode == 0
+
+
+def WaitUntilSwarmServicesAreRunning(timeoutInSeconds = 60, intervalInSeconds = 1, serviceNames = None):
+    timeOut = time.time() + timeoutInSeconds
+    while time.time() < timeOut:
+        print("Waiting for services to start. Seconds left: " + str(int(timeOut - time.time())))
+        if CheckIfSwarmServiceIsRunning(serviceNames):
+            print("Services started.")
+            return
+        time.sleep(intervalInSeconds)
+    raise Exception("Services did not start in time.")
 
 
 def StartSwarm():

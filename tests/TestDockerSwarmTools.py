@@ -54,6 +54,9 @@ class TestDockerSwarmTools(unittest.TestCase):
         TerminalTools.LoadEnvironmentVariables(os.path.join(TestTools.TEST_SAMPLE_FOLDER, '.env'))
         DockerComposeTools.DockerComposeBuild([os.path.join(TestTools.TEST_SAMPLE_FOLDER, 'docker-compose.yml')])
         DockerSwarmTools.DeployStack(os.path.join(TestTools.TEST_SAMPLE_FOLDER, 'docker-compose.yml'), stack)
+        serviceName = stack + '_nginx-service'
+        assert DockerSwarmTools.CheckIfSwarmServiceIsRunning(serviceName) == False
+        DockerSwarmTools.WaitUntilSwarmServicesAreRunning(10, 1, serviceName)
         DockerSwarmTools.RemoveStack(stack)
         print('DONE CREATE STACK')
 
