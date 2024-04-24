@@ -5,13 +5,14 @@ import time
 from DockerBuildSystem import TerminalTools
 
 
-def DeployStack(composeFile, stackName, environmentVariablesFiles = [], withRegistryAuth = False):
+def DeployStack(composeFile, stackName, environmentVariablesFiles = [], withRegistryAuth = False, detach = True):
     for environmentVariablesFile in environmentVariablesFiles:
         TerminalTools.LoadEnvironmentVariables(environmentVariablesFile)
     print("Deploying stack: " + stackName)
     dockerCommand = "docker stack deploy -c " + composeFile
     if withRegistryAuth:
         dockerCommand += " --with-registry-auth"
+    dockerCommand += " --detach=" + str(detach).lower()
     dockerCommand += " " + stackName
     TerminalTools.ExecuteTerminalCommands([dockerCommand], True)
 
