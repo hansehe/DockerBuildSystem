@@ -4,21 +4,21 @@ from DockerBuildSystem import TerminalTools, DockerImageTools, YamlTools
 
 
 def MergeComposeFiles(composeFiles, outputComposeFile):
-    terminalCommand = "docker-compose"
+    terminalCommand = "docker compose"
     terminalCommand += MergeComposeFileToTerminalCommand(composeFiles)
     terminalCommand += " config > " + outputComposeFile
     TerminalTools.ExecuteTerminalCommands([terminalCommand], True)
 
 
 def DockerComposeBuild(composeFiles):
-    terminalCommand = "docker-compose"
+    terminalCommand = "docker compose"
     terminalCommand += MergeComposeFileToTerminalCommand(composeFiles)
     terminalCommand += " build"
     TerminalTools.ExecuteTerminalCommands([terminalCommand], True)
 
 
 def DockerComposeUp(composeFiles, abortOnContainerExit = True, detached = False):
-    terminalCommand = "docker-compose"
+    terminalCommand = "docker compose"
     terminalCommand += MergeComposeFileToTerminalCommand(composeFiles)
     terminalCommand += " up"
     if detached:
@@ -29,14 +29,14 @@ def DockerComposeUp(composeFiles, abortOnContainerExit = True, detached = False)
 
 
 def DockerComposeDown(composeFiles):
-    terminalCommand = "docker-compose"
+    terminalCommand = "docker compose"
     terminalCommand += MergeComposeFileToTerminalCommand(composeFiles)
     terminalCommand += " down"
     TerminalTools.ExecuteTerminalCommands([terminalCommand])
 
 
 def DockerComposeRemove(composeFiles, force = True):
-    terminalCommand = "docker-compose"
+    terminalCommand = "docker compose"
     terminalCommand += MergeComposeFileToTerminalCommand(composeFiles)
     terminalCommand += " rm"
     if force:
@@ -45,14 +45,14 @@ def DockerComposeRemove(composeFiles, force = True):
 
 
 def DockerComposePush(composeFiles):
-    terminalCommand = "docker-compose"
+    terminalCommand = "docker compose"
     terminalCommand += MergeComposeFileToTerminalCommand(composeFiles)
     terminalCommand += " push"
     TerminalTools.ExecuteTerminalCommands([terminalCommand], True)
 
 
 def DockerComposePull(composeFiles, dryRun=False):
-    terminalCommand = "docker-compose"
+    terminalCommand = "docker compose"
     terminalCommand += MergeComposeFileToTerminalCommand(composeFiles)
     terminalCommand += " pull"
     if dryRun:
