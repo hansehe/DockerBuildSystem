@@ -78,10 +78,10 @@ def ExecuteTerminalCommandAndGetOutput(terminalCommand, includeErrorOutput=False
                         errorDetected = True
             returnCode = process.wait()
             if returnCode != 0 or errorDetected:
-                error_msg = f"Command failed with return code {returnCode}"
+                errorMsg = f"Command failed with return code {returnCode}"
                 if errorDetected:
-                    error_msg += "\nTransient error detected in output."
-                raise Exception(f"{error_msg}\n\nOutput:\n{outputBytes.decode('utf-8', errors='replace')}")
+                    errorMsg += "\nTransient error detected in output."
+                raise Exception(f"{errorMsg}\n\nOutput:\n{outputBytes.decode('utf-8', errors='replace')}")
             return outputBytes
     except KeyboardInterrupt:
         raise Exception("Command interrupted by user (KeyboardInterrupt)")
