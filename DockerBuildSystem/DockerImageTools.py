@@ -91,7 +91,7 @@ def GetImageRepoDigest(imageName):
 
 def GetImageLabels(imageName):
     jsonInfo = GetImageInfo(imageName)
-    labels = jsonInfo['ContainerConfig']['Labels']
+    labels = jsonInfo['Config']['Labels']
     return labels
 
 
