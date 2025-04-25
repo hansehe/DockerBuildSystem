@@ -1,14 +1,17 @@
 import subprocess
 import json
 import time
+import logging
 
 from DockerBuildSystem import TerminalTools
+
+log = logging.getLogger(__name__)
 
 
 def DeployStack(composeFile, stackName, environmentVariablesFiles = [], withRegistryAuth = False, detach = True):
     for environmentVariablesFile in environmentVariablesFiles:
         TerminalTools.LoadEnvironmentVariables(environmentVariablesFile)
-    print("Deploying stack: " + stackName)
+    log.info("Deploying stack: " + stackName)
     dockerCommand = "docker stack deploy -c " + composeFile
     if withRegistryAuth:
         dockerCommand += " --with-registry-auth"
@@ -18,13 +21,13 @@ def DeployStack(composeFile, stackName, environmentVariablesFiles = [], withRegi
 
 
 def RemoveStack(stackName):
-    print("Removing stack: " + stackName)
+    log.info("Removing stack: " + stackName)
     dockerCommand = "docker stack rm " + stackName
     TerminalTools.ExecuteTerminalCommands([dockerCommand])
 
 
 def CreateSwarmNetwork(networkName, encrypted = False, driver = 'overlay', attachable = True, options = []):
-    print("Creating network: " + networkName)
+    log.info("Creating network: " + networkName)
     dockerCommand = "docker network create "
     dockerCommand += "--driver {0} ".format(driver)
     if attachable:
@@ -38,37 +41,37 @@ def CreateSwarmNetwork(networkName, encrypted = False, driver = 'overlay', attac
 
 
 def RemoveSwarmNetwork(networkName):
-    print("Removing network: " + networkName)
+    log.info("Removing network: " + networkName)
     dockerCommand = "docker network rm " + networkName
     TerminalTools.ExecuteTerminalCommands([dockerCommand])
 
 
 def CreateSwarmSecret(secretFile, secretName):
-    print("Creating secret: " + secretName)
+    log.info("Creating secret: " + secretName)
     dockerCommand = "docker secret create " + secretName + " " + secretFile
     TerminalTools.ExecuteTerminalCommands([dockerCommand])
 
 
 def RemoveSwarmSecret(secretName):
-    print("Removing secret: " + secretName)
+    log.info("Removing secret: " + secretName)
     dockerCommand = "docker secret rm " + secretName
     TerminalTools.ExecuteTerminalCommands([dockerCommand])
 
 
 def CreateSwarmConfig(configFile, configName):
-    print("Creating config: " + configName)
+    log.info("Creating config: " + configName)
     dockerCommand = "docker config create " + configName + " " + configFile
     TerminalTools.ExecuteTerminalCommands([dockerCommand])
 
 
 def RemoveSwarmConfig(configName):
-    print("Removing config: " + configName)
+    log.info("Removing config: " + configName)
     dockerCommand = "docker config rm " + configName
     TerminalTools.ExecuteTerminalCommands([dockerCommand])
 
 
 def CreateSwarmVolume(volumeName, driver = 'local', driverOptions = []):
-    print("Creating volume: {0}, with driver: {1} and driver options: {2}".format(volumeName, driver, driverOptions))
+    log.info("Creating volume: {0}, with driver: {1} and driver options: {2}".format(volumeName, driver, driverOptions))
     dockerCommand = "docker volume create --driver {0}".format(driver)
     for driverOption in driverOptions:
         dockerCommand += " --opt {0}".format(driverOption)
@@ -77,7 +80,7 @@ def CreateSwarmVolume(volumeName, driver = 'local', driverOptions = []):
 
 
 def RemoveSwarmVolume(volumeName):
-    print("Removing volume: " + volumeName)
+    log.info("Removing volume: " + volumeName)
     dockerCommand = "docker volume rm " + volumeName
     TerminalTools.ExecuteTerminalCommands([dockerCommand])
 
@@ -95,7 +98,7 @@ def CheckIfSwarmServiceIsRunning(serviceNames = None):
             currentReplicas = int(replicas[0])
             totalReplicas = int(replicas[1])
             if currentReplicas < totalReplicas:
-                print("Service: " + service['Name'] + " is not running. Current replicas: " + str(currentReplicas) + " of " + str(totalReplicas))
+                log.info("Service: " + service['Name'] + " is not running. Current replicas: " + str(currentReplicas) + " of " + str(totalReplicas))
                 return False
     return True
 
@@ -109,9 +112,9 @@ def SwarmIsInitiated():
 def WaitUntilSwarmServicesAreRunning(timeoutInSeconds = 60, intervalInSeconds = 1, serviceNames = None):
     timeOut = time.time() + timeoutInSeconds
     while time.time() < timeOut:
-        print("Waiting for services to start. Seconds left: " + str(int(timeOut - time.time())))
+        log.info("Waiting for services to start. Seconds left: " + str(int(timeOut - time.time())))
         if CheckIfSwarmServiceIsRunning(serviceNames):
-            print("Services started.")
+            log.info("Services started.")
             return
         time.sleep(intervalInSeconds)
     raise Exception("Services did not start in time.")
@@ -119,9 +122,9 @@ def WaitUntilSwarmServicesAreRunning(timeoutInSeconds = 60, intervalInSeconds = 
 
 def StartSwarm():
     if SwarmIsInitiated():
-        print("Swarm is already initiated.")
+        log.info("Swarm is already initiated.")
         return
 
-    print("Starting swarm")
+    log.info("Starting swarm")
     dockerCommand = "docker swarm init"
     TerminalTools.ExecuteTerminalCommands([dockerCommand])

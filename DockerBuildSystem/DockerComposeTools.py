@@ -1,6 +1,9 @@
 import os
 import random
+import logging
 from DockerBuildSystem import TerminalTools, DockerImageTools, YamlTools
+
+log = logging.getLogger(__name__)
 
 
 def MergeComposeFiles(composeFiles, outputComposeFile):
@@ -56,7 +59,7 @@ def DockerComposePull(composeFiles, dryRun=False):
     terminalCommand += MergeComposeFileToTerminalCommand(composeFiles)
     terminalCommand += " pull"
     if dryRun:
-        print("would have called {}".format(terminalCommand))
+        log.info("would have called {}".format(terminalCommand))
     else:
         TerminalTools.ExecuteTerminalCommands([terminalCommand], True)
 
@@ -69,7 +72,7 @@ def TagImages(composeFile, newTag, dryRun = False):
         if not dryRun:
             DockerImageTools.TagImage(sourceImage, targetImage)
         else:
-            print('Would have tagged image {} as {}'.format(sourceImage, targetImage))
+            log.info('Would have tagged image {} as {}'.format(sourceImage, targetImage))
 
 
 def SaveImages(composeFile, outputFolder):
@@ -90,7 +93,7 @@ def PublishDockerImages(composeFile, dryRun = False):
         if not dryRun:
             DockerImageTools.PushImage(sourceImage)
         else:
-            print('Would have pushed {}'.format(sourceImage))
+            log.info('Would have pushed {}'.format(sourceImage))
 
 
 def MultiBuildDockerImages(composeFile, platforms, tags = None, push = False, dryRun = False):
@@ -106,7 +109,7 @@ def MultiBuildDockerImages(composeFile, platforms, tags = None, push = False, dr
         if not dryRun:
             DockerImageTools.BuildImage(sourceImage, fullPathDockerfile, context, args, tags, platforms, push)
         else:
-            print('Would have multi built {}'.format(sourceImage))
+            log.info('Would have multi built {}'.format(sourceImage))
 
 
 def PromoteDockerImages(composeFile, targetTags, sourceFeed = None, targetFeed = None, user = None, password = None, logoutFromFeeds = False, dryRun = False):
@@ -134,8 +137,8 @@ def PublishDockerImagesWithNewTag(composeFile, newTag, sourceRepository = None, 
         if not(sourceRepository is None or targetRepository is None):
             targetImage = targetImage.replace(sourceRepository, targetRepository, 1)
         if dryRun:
-            print("Would have tagged image {} as {}".format(sourceImage, targetImage))
-            print("Would have pushed image {}".format(targetImage))
+            log.info("Would have tagged image {} as {}".format(sourceImage, targetImage))
+            log.info("Would have pushed image {}".format(targetImage))
         else:
             DockerImageTools.TagImage(sourceImage, targetImage)
             DockerImageTools.PushImage(targetImage)
@@ -160,7 +163,7 @@ def ExecuteComposeTests(composeFiles, testContainerNames = None, removeTestConta
 
 
 def CreateLocalNetwork(networkName):
-    print("Creating local network: " + networkName)
+    log.info("Creating local network: " + networkName)
     dockerCommand = "docker network create --attachable --driver=bridge "
     dockerCommand += networkName
     TerminalTools.ExecuteTerminalCommands([dockerCommand])

@@ -1,6 +1,9 @@
 from DockerBuildSystem import TerminalTools
 import re
 import json
+import logging
+
+log = logging.getLogger(__name__)
 
 
 def GetTargetImage(sourceImage, newTag):
@@ -139,9 +142,9 @@ def VerifyContainerExitCode(containerNames, assertExitCodes = False):
         if exitCode > 0:
             errorMsg = "Container '" + containerName + "' FAILED!\r\n"
             sumErrorMsgs += errorMsg
-            print(errorMsg)
+            log.info(errorMsg)
         else:
-            print(containerName + " container finished with success.\r\n")
+            log.info(containerName + " container finished with success.\r\n")
     if sumExitCodes > 0 and assertExitCodes:
         raise Exception(sumErrorMsgs)
     return sumExitCodes, sumErrorMsgs
@@ -149,7 +152,7 @@ def VerifyContainerExitCode(containerNames, assertExitCodes = False):
 
 def DockerLogin(server, userName, password, dryRun=False):
     if(dryRun):
-        print("Would have logged in to {0} with user {1}".format(server, userName))
+        log.info("Would have logged in to {0} with user {1}".format(server, userName))
     else:
         terminalCommand = 'docker login {0} -u {1} -p {2}'.format(server, userName, password)
         TerminalTools.ExecuteTerminalCommands(
@@ -160,7 +163,7 @@ def DockerLogin(server, userName, password, dryRun=False):
 
 def DockerLogout(server, dryRun=False):
     if(dryRun):
-        print("Would have logged out of {0}".format(server))
+        log.info("Would have logged out of {0}".format(server))
     else:
         terminalCommand = 'docker logout {0}'.format(server)
         TerminalTools.ExecuteTerminalCommands(

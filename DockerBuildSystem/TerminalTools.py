@@ -1,7 +1,10 @@
 import subprocess
 import os
 import re
+import logging
 from dotenv import load_dotenv
+
+log = logging.getLogger(__name__)
 
 
 def LoadEnvironmentVariables(environmentVariablesFile):
@@ -15,14 +18,14 @@ def LoadDefaultEnvironmentVariablesFile(defaultEnvFile = '.env'):
 
 def PrintAvailableCommands(availableCommands):
     for availableCommand in availableCommands:
-        print(availableCommand)
+        log.info(availableCommand)
 
 
 def ExecuteTerminalCommands(terminalCommands, raiseExceptionWithErrorCode=False, printCommand=False, transientErrorPatterns=None):
     transientErrorPatterns = transientErrorPatterns if transientErrorPatterns is not None else []
     for terminalCommand in terminalCommands:
         if printCommand:
-            print(f"Executing: {terminalCommand}")
+            log.info(f"Executing: {terminalCommand}")
         try:
             with subprocess.Popen(
                 terminalCommand,
@@ -35,7 +38,7 @@ def ExecuteTerminalCommands(terminalCommands, raiseExceptionWithErrorCode=False,
                 outputLines = []
                 for line in process.stdout:
                     line = line.rstrip()
-                    print(line)
+                    log.info(line)
                     outputLines.append(line)
                     for pattern in transientErrorPatterns:
                         if pattern.lower() in line.lower():
@@ -48,7 +51,7 @@ def ExecuteTerminalCommands(terminalCommands, raiseExceptionWithErrorCode=False,
                     if raiseExceptionWithErrorCode:
                         raise Exception(errorMsg)
                     else:
-                        print(errorMsg)
+                        log.info(errorMsg)
         except KeyboardInterrupt:
             if raiseExceptionWithErrorCode:
                 raise Exception("Command interrupted by user (KeyboardInterrupt)")
@@ -57,7 +60,7 @@ def ExecuteTerminalCommands(terminalCommands, raiseExceptionWithErrorCode=False,
 def ExecuteTerminalCommandAndGetOutput(terminalCommand, includeErrorOutput=False, printCommand=False, transientErrorPatterns=None):
     transientErrorPatterns = transientErrorPatterns if transientErrorPatterns is not None else []
     if printCommand:
-        print(f"Executing: {terminalCommand}")
+        log.info(f"Executing: {terminalCommand}")
     try:
         with subprocess.Popen(
             terminalCommand,
@@ -69,7 +72,7 @@ def ExecuteTerminalCommandAndGetOutput(terminalCommand, includeErrorOutput=False
             errorDetected = False
             for line in process.stdout:
                 try:
-                    print(line.decode("utf-8", errors="replace"), end="")
+                    log.info(line.decode("utf-8", errors="replace"), end="")
                 except Exception:
                     pass
                 outputBytes += line

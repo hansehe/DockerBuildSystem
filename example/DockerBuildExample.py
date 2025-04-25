@@ -1,5 +1,8 @@
 import sys
+import logging
 from DockerBuildSystem import TerminalTools, DockerComposeTools, VersionTools
+
+log = logging.getLogger(__name__)
 
 AvailableCommands = [
     ["run", "Run services."],
@@ -34,7 +37,7 @@ def BuildDocker(buildSelection):
         TerminalTools.PrintAvailableCommands(AvailableCommands)
 
     else:
-        print("Please provide a valid build argument: ")
+        log.info("Please provide a valid build argument: ")
         BuildDocker("help")
 
 def GetBuildSelections():

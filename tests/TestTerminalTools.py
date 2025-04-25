@@ -1,7 +1,10 @@
 import unittest
 import os
+import logging
 from tests import TestTools
 from DockerBuildSystem import TerminalTools
+
+log = logging.getLogger(__name__)
 
 class TestTerminalTools(unittest.TestCase):
 
@@ -20,7 +23,7 @@ class TestTerminalTools(unittest.TestCase):
     def test_ExecuteTerminalCommandAndGetOutput(self):
         cmd = 'docker --version'
         version = TerminalTools.ExecuteTerminalCommandAndGetOutput(cmd)
-        print(version)
+        log.info(version)
         self.assertTrue('version' in str(version).lower())
 
 
