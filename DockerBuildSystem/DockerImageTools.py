@@ -6,6 +6,14 @@ import logging
 log = logging.getLogger(__name__)
 
 
+def SplitImageRepoAndTag(image):
+    lastColon = image.rfind(':')
+    lastSlash = image.rfind('/')
+    if lastColon == -1 or lastColon < lastSlash:
+        return image, 'latest'
+    return image[:lastColon], image[lastColon + 1:]
+
+
 def GetTargetImage(sourceImage, newTag):
     tagIndex = sourceImage.rfind(':')
     targetImage = sourceImage[:tagIndex + 1] + str(newTag)
